@@ -19,7 +19,7 @@ public class StatusProvider extends ContentProvider {
   public static final String SINGLE_RECORD_MIME_TYPE = "vnd.android.cursor.item/vnd.marakana.yamba.status";
   public static final String MULTIPLE_RECORDS_MIME_TYPE = "vnd.android.cursor.dir/vnd.marakana.yamba.status";
 
-  static final int VERSION = 103; 
+  static final int VERSION = 103;
   static final String DATABASE = "yamba.db";
   static final String T_STATUSES = "statuses";
 
@@ -89,25 +89,27 @@ public class StatusProvider extends ContentProvider {
   @Override
   public Uri insert(Uri uri, ContentValues values) {
     SQLiteDatabase db = dbHelper.getWritableDatabase();
-//    try {
-      long id = db.insertWithOnConflict(T_STATUSES, null, values,
-          SQLiteDatabase.CONFLICT_IGNORE);
-      if (id == -1) {
-        // throw new RuntimeException(String.format(
-        // "%s: Failed to insert [%s] to [%s] for unknown reasons.", TAG,
-        // values, uri));
-        // TODO not sure why I'm getting -1 here.
-        return null;
-      } else {
-        Uri newUri = ContentUris.withAppendedId(uri, id);
-        // Notify the Context's ContentResolver of the change
-        getContext().getContentResolver().notifyChange(newUri, null);
-        return newUri;
-      }
-//    }  
-//    finally {
-//      db.close();
-//    }
+    // try {
+    long id = db.insertWithOnConflict(T_STATUSES, null, values,
+        SQLiteDatabase.CONFLICT_IGNORE);
+    Log.d(TAG, "inserting: " + values.toString() );
+    if (id == -1) {
+//      throw new RuntimeException(String.format(
+//          "%s: Failed to insert [%s] to [%s] for unknown reasons.", TAG,
+//          values, uri));
+      // TODO not sure why I'm getting -1 here.
+      return null;
+    } else {
+      Uri newUri = ContentUris.withAppendedId(uri, id);
+      // Notify the Context's ContentResolver of the change
+      getContext().getContentResolver().notifyChange(newUri, null);
+      Log.d(TAG, "inserted " + newUri.toString());
+      return newUri;
+    }
+    // }
+    // finally {
+    // db.close();
+    // }
   }
 
   @Override
@@ -168,6 +170,8 @@ public class StatusProvider extends ContentProvider {
 
     // Notify the context's ContentResolver if the cursor result set changes
     c.setNotificationUri(getContext().getContentResolver(), uri);
+
+    Log.d(TAG, "queried records: " + c.getCount());
 
     return c;
   }

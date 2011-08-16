@@ -14,7 +14,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 
 public class TimelineFragment extends ListFragment implements
     LoaderManager.LoaderCallbacks<Cursor> {
-  static final String TAG = StatusProvider.class.getSimpleName();
+  static final String TAG = "TimelineFragment";
 
   static final String[] FROM = new String[] { StatusProvider.C_USER,
       StatusProvider.C_TEXT, StatusProvider.C_PROFILE_IMAGE_URL };
@@ -47,6 +47,7 @@ public class TimelineFragment extends ListFragment implements
     // Prepare the loader. Either re-connect with an existing one,
     // or start a new one.
     getLoaderManager().initLoader(LOADER_TIMELINE, null, this);
+    Log.d(TAG, "onActivityCreated");
   }
 
   // These are the status rows that we will retrieve.
@@ -57,22 +58,25 @@ public class TimelineFragment extends ListFragment implements
 
   /* Implementation of LoaderManager.LoaderCallbacks */
   public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-    // This is called when a new Loader needs to be created. This
-    // sample only has one Loader, so we don't care about the ID.
+    // This is called when a new Loader needs to be created. 
+    // We only have one Loader, so we don't care about the ID.
+    Log.d(TAG, "onCreateLoader");
 
-    // Now create and return a CursorLoader that will take care of
-    // creating a Cursor for the data being displayed.
-//    return new CursorLoader(getActivity(), StatusProvider.CONTENT_URI,
-//        PROJECTION, null, null,
-//        StatusProvider.C_CREATED_AT + " DESC");
-    return new CursorLoader(getActivity(), StatusProvider.CONTENT_URI,
-        PROJECTION, StatusProvider.C_REPLY_TO_ID + " not null", null,
-        StatusProvider.C_CREATED_AT + " DESC");
+    switch(id) {
+    case LOADER_TIMELINE:
+      return new CursorLoader(getActivity(), StatusProvider.CONTENT_URI,
+          PROJECTION, StatusProvider.C_REPLY_TO_ID + " IS NULL", null,
+          StatusProvider.C_CREATED_AT + " DESC");
+    case LOADER_MENTIONS:
+      return null;
+    }
+    return null; // Unimplemented loader
   }
 
   public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
     // Swap the new cursor in. (The framework will take care of closing the
     // old cursor once we return.)
+    Log.d(TAG, "onLoadFinished with " + data.getCount());
     mAdapter.swapCursor(data);
   }
 
@@ -80,6 +84,7 @@ public class TimelineFragment extends ListFragment implements
     // This is called when the last Cursor provided to onLoadFinished()
     // above is about to be closed. We need to make sure we are no
     // longer using it.
+      Log.d(TAG, "onLoaderReset");
     mAdapter.swapCursor(null);
   }
 

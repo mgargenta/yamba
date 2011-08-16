@@ -7,19 +7,19 @@
 
   <fragment
     class="com.marakana.yamba.TimelineFragment"
-    android:id="@+id/fragment_timeline"
+    android:id="@+id/list"
+    android:layout_weight="1"
+    android:layout_width="0px"
+    android:layout_height="match_parent" />
+
+<FrameLayout
+    android:id="@+id/details"
+    android:layout_width="0px"
     android:layout_height="match_parent"
-    android:layout_width="wrap_content"
-    android:layout_weight="1" />
-    
-    
-  <!--
-  <fragment
-    class="com.marakana.yamba.StatusFragment"
-    android:id="@+id/fragment_status"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:layout_weight="1" />
-    -->
+    android:background="?android:attr/detailsElementBackground" />
+
+  <!-- <fragment class="com.marakana.yamba.StatusFragment" android:id="@+id/fragment_status" 
+    android:layout_height="match_parent" android:layout_width="match_parent" android:layout_weight="1" 
+    /> -->
 
 </LinearLayout>

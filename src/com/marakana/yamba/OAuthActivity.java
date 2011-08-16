@@ -87,7 +87,6 @@ public class OAuthActivity extends Activity {
 
       new RetrieveAccessTokenTask().execute(verifier);
     }
-
   }
 
   public void onClickAuthorize(View view) {
@@ -184,6 +183,7 @@ public class OAuthActivity extends Activity {
       if (result != null) {
         Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG)
             .show();
+//        OAuthActivity.this.finish();
       }
     }
   }

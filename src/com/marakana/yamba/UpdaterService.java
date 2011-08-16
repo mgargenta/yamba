@@ -17,7 +17,7 @@ public class UpdaterService extends IntentService {
   public static final String RECEIVE_TIMELINE_NOTIFICATIONS = "com.marakana.yamba.RECEIVE_TIMELINE_NOTIFICATIONS";
 
   YambaApp yamba;
-  Toast mToastNewTweets;
+  Toast toastNewTweets, toastNoNewTweets;
 
   public UpdaterService() {
     super(TAG);
@@ -31,8 +31,10 @@ public class UpdaterService extends IntentService {
 
     yamba = (YambaApp) getApplication();
 
-    mToastNewTweets = Toast.makeText(this.getApplicationContext(),
+    toastNewTweets = Toast.makeText(this.getApplicationContext(),
         "You've got new tweets", Toast.LENGTH_LONG);
+    toastNoNewTweets = Toast.makeText(this.getApplicationContext(),
+        "No new tweets", Toast.LENGTH_SHORT);
   }
 
   @Override
@@ -49,20 +51,26 @@ public class UpdaterService extends IntentService {
       values.put(StatusProvider.C_CREATED_AT, status.createdAt.getTime());
       values.put(StatusProvider.C_USER, status.user.name);
       values.put(StatusProvider.C_SCREEN_NAME, status.user.screenName);
-      values.put(StatusProvider.C_PROFILE_IMAGE_URL, status.user.profileImageUrl
-          .toString());
+      values.put(StatusProvider.C_PROFILE_IMAGE_URL,
+          status.user.profileImageUrl.toString());
       values.put(StatusProvider.C_TEXT, status.text);
+      if (status.inReplyToStatusId != null) {
+        values.put(StatusProvider.C_REPLY_TO_ID,
+            status.inReplyToStatusId.intValue());
+      }
       uri = getContentResolver().insert(StatusProvider.CONTENT_URI, values);
       if (StatusProvider.getId(uri) != -1) {
         newTweets++;
-        Log.d(TAG, String.format("New tweet: %s: %s", status.user.name,
-            status.text));
+        Log.d(TAG,
+            String.format("New tweet: %s: %s", status.user.name, status.text));
       }
     }
 
     // Notify user of new tweets
     if (newTweets > 0) {
-      mToastNewTweets.show();
+      toastNewTweets.show();
+    } else {
+      toastNoNewTweets.show();
     }
 
     Log.d(TAG, "onHandleIntent done with new tweets: " + newTweets);

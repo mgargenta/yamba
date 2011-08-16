@@ -31,7 +31,8 @@
     <activity
       android:name="OAuthActivity"
       android:label="@string/authorize"
-      android:launchMode="singleInstance">
+      android:launchMode="singleInstance"
+      android:theme="@android:style/Theme.Holo.Dialog.NoActionBar">
       <!-- Used for OAuth callback -->
       <intent-filter>
         <action

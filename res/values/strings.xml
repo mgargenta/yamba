@@ -12,4 +12,5 @@
     <string name="background_data">Background Data</string>
     <string name="background_data_summary">Allow background updates?</string>
     <string name="text_size">Text size</string>
+    <string name="preferences">Preferences</string>
 </resources>
