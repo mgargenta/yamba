@@ -27,11 +27,11 @@ public class YambaApp extends Application {
     // Make a Twitter object
     if (token != null && tokenSecret != null) {
       OAuthSignpostClient oauthClient = new OAuthSignpostClient(
-          OAuthActivity.OAUTH_KEY, OAuthActivity.OAUTH_SECRET, token,
+          OAuthFragment.OAUTH_KEY, OAuthFragment.OAUTH_SECRET, token,
           tokenSecret);
       twitter = new Twitter("MarkoGargenta", oauthClient);
     } else {
-      startActivity(new Intent(this, OAuthActivity.class)
+      startActivity(new Intent(this, OAuthFragment.class)
           .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
   }

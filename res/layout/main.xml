@@ -8,18 +8,22 @@
   <fragment
     class="com.marakana.yamba.TimelineFragment"
     android:id="@+id/list"
-    android:layout_weight="1"
-    android:layout_width="0px"
+    android:layout_weight="2"
+    android:layout_width="0dp"
     android:layout_height="match_parent" />
 
-<FrameLayout
-    android:id="@+id/details"
-    android:layout_width="0px"
+  <!-- <fragment
+    class="com.marakana.yamba.PrefsFragment"
+    android:id="@+id/fragment_status"
     android:layout_height="match_parent"
+    android:layout_width="0dp"
+    android:layout_weight="1" />
+ -->
+  <FrameLayout
+    android:id="@+id/container"
+    android:layout_height="match_parent"
+    android:layout_width="0dp"
+    android:layout_weight="1"
     android:background="?android:attr/detailsElementBackground" />
-
-  <!-- <fragment class="com.marakana.yamba.StatusFragment" android:id="@+id/fragment_status" 
-    android:layout_height="match_parent" android:layout_width="match_parent" android:layout_weight="1" 
-    /> -->
 
 </LinearLayout>

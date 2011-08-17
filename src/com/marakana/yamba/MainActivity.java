@@ -23,17 +23,18 @@ public class MainActivity extends Activity implements TabListener {
   static final String FRAGMENT_COMPOSE = "FRAGMENT_COMPOSE";
   static final String FRAGMENT_PREFS = "FRAGMENT_PREFS";
   YambaApp yamba;
-  
+
   FragmentManager fragmentManager;
   FragmentTransaction fragmentTransaction;
+  PrefsFragment prefsFragment;
 
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    yamba = (YambaApp)getApplication();
-    
+    yamba = (YambaApp) getApplication();
+
     // Update theme, if previously set
     if (savedInstanceState != null) {
       mThemeId = savedInstanceState.getInt("theme");
@@ -45,7 +46,7 @@ public class MainActivity extends Activity implements TabListener {
     // Set the action bar
     ActionBar bar = getActionBar();
     bar.addTab(bar.newTab().setText("Timeline").setTabListener(this));
-//    bar.addTab(bar.newTab().setText("@Mentions").setTabListener(this));
+    // bar.addTab(bar.newTab().setText("@Mentions").setTabListener(this));
 
     bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
         | ActionBar.DISPLAY_USE_LOGO);
@@ -66,7 +67,7 @@ public class MainActivity extends Activity implements TabListener {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
     case R.id.itemAuthorize:
-      startActivity(new Intent(this, OAuthActivity.class));
+      showFragment("com.marakana.yamba.OAuthFragment");
       return true;
     case R.id.toggleTheme:
       if (mThemeId == android.R.style.Theme_Holo_Light) {
@@ -81,34 +82,26 @@ public class MainActivity extends Activity implements TabListener {
       startService(new Intent(this, UpdaterService.class));
       return true;
     case R.id.itemCompose:
-      fragmentTransaction = fragmentManager.beginTransaction();
-      
-      // Remove old compose fragment
-      Fragment prev = getFragmentManager().findFragmentByTag(FRAGMENT_COMPOSE);
-      if (prev != null) {
-        fragmentTransaction.remove(prev);
-      }
+      showFragment("com.marakana.yamba.ComposeFragment");
 
-      fragmentTransaction.addToBackStack(null);
-
-      // Create and show the dialog.
-      ComposeFragment composeFragment = ComposeFragment.newInstance();
-      composeFragment.show(fragmentTransaction, FRAGMENT_COMPOSE);
+      // fragmentTransaction = fragmentManager.beginTransaction();
+      //
+      // // Remove old compose fragment
+      // Fragment prev =
+      // getFragmentManager().findFragmentByTag(FRAGMENT_COMPOSE);
+      // if (prev != null) {
+      // fragmentTransaction.remove(prev);
+      // }
+      //
+      // fragmentTransaction.addToBackStack(null);
+      //
+      // // Create and show the dialog.
+      // ComposeFragment composeFragment = ComposeFragment.newInstance();
+      // composeFragment.show(fragmentTransaction, FRAGMENT_COMPOSE);
       return true;
     case R.id.itemPrefs:
-      fragmentTransaction = fragmentManager.beginTransaction();
-      
-      // Remove old compose fragment
-      prev = getFragmentManager().findFragmentByTag(FRAGMENT_PREFS);
-      if (prev != null) {
-        fragmentTransaction.remove(prev);
-      }
+      showFragment("com.marakana.yamba.PrefsFragment");
 
-      fragmentTransaction.addToBackStack(null);
-
-      // Create and show the dialog.
-      PrefsFragment prefsFragment = new PrefsFragment();
-//      prefsFragment.show(fragmentTransaction, FRAGMENT_PREFS);
       return true;
     default:
       return super.onOptionsItemSelected(item);
@@ -139,8 +132,8 @@ public class MainActivity extends Activity implements TabListener {
 
   }
 
-  //--- Other methods
-  
+  // --- Other methods
+
   public void postToTwitter(String status) {
     // Remove old compose fragment
     fragmentTransaction = fragmentManager.beginTransaction();
@@ -150,16 +143,16 @@ public class MainActivity extends Activity implements TabListener {
       fragmentTransaction.remove(prev);
     }
     fragmentTransaction.commit();
-    
+
     (new PostToTwitterTask()).execute(status);
   }
-  
-  class PostToTwitterTask extends AsyncTask<String,Void,String> {
+
+  class PostToTwitterTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... status) {
-      String ret=null;
-      
+      String ret = null;
+
       try {
         yamba.twitter.setStatus(status[0]);
         ret = "Successfully posted";
@@ -175,6 +168,24 @@ public class MainActivity extends Activity implements TabListener {
     protected void onPostExecute(String result) {
       Toast.makeText(yamba, result, Toast.LENGTH_LONG).show();
     }
-    
+
+  }
+
+  // --- Private helper methods
+  private void showFragment(String tag) {
+    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+    getFragmentManager().popBackStackImmediate();
+    Fragment fragment = getFragmentManager().findFragmentByTag(tag);
+
+    if (fragment == null) {
+      fragment = Fragment.instantiate(yamba, tag);
+      transaction.replace(R.id.container, fragment, tag);
+      transaction.addToBackStack(tag);
+      Log.d(TAG, "Added " + tag);
+    }
+
+    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+    transaction.commit();
+    Log.d(TAG, "Showed " + tag);
   }
 }
