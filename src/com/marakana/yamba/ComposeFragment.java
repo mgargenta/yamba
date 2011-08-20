@@ -12,15 +12,7 @@ import android.widget.EditText;
 public class ComposeFragment extends DialogFragment {
 
   static ComposeFragment newInstance() {
-    ComposeFragment f = new ComposeFragment();
-
-    return f;
-  }
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    
+    return new ComposeFragment();
   }
   
   @Override
@@ -37,6 +29,7 @@ public class ComposeFragment extends DialogFragment {
               ((MainActivity)getActivity()).postToTwitter(statusText.getText().toString());
           }
       });
+      
       return view;
   }
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
     android:icon="@android:drawable/ic_menu_search"
@@ -22,7 +21,12 @@
     android:showAsAction="ifRoom"
     android:title="@string/refresh"
     android:icon="@drawable/ic_menu_refresh" />
-  <item android:title="@string/authorize" android:id="@+id/itemAuthorize"></item>
-  <item android:title="@string/preferences" android:id="@+id/itemPrefs" android:icon="@android:drawable/ic_menu_preferences"></item>
+  <item
+    android:title="@string/authorize"
+    android:id="@+id/itemAuthorize" />
+  <item
+    android:title="@string/preferences"
+    android:id="@+id/itemPrefs"
+    android:icon="@android:drawable/ic_menu_preferences" />
 
 </menu>

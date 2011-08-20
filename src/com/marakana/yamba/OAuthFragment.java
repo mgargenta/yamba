@@ -10,7 +10,6 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 import winterwell.jtwitter.OAuthSignpostClient;
 import winterwell.jtwitter.Twitter;
-import winterwell.jtwitter.TwitterException;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class OAuthFragment extends Fragment {
-  static final String TAG = "Yamba-OAuthActivity";
+  static final String TAG = "OAuthFragment";
   static final String OAUTH_KEY = "1csHpu9jAh9XB41E210A";
   static final String OAUTH_SECRET = "7QuUrV43ULb4Pevtaly9RJqNKU6khLQpdtWGmT8c";
   static final String OAUTH_CALLBACK_SCHEME = "x-marakana-yamba-oauth-twitter";
@@ -48,7 +47,6 @@ public class OAuthFragment extends Fragment {
     super.onCreate(savedInstanceState);
     yamba = (YambaApp) getActivity().getApplication();
 
-    // mConsumer = new DefaultOAuthConsumer(OAUTH_KEY, OAUTH_SECRET);
     consumer = new CommonsHttpOAuthConsumer(OAUTH_KEY, OAUTH_SECRET);
     provider = new DefaultOAuthProvider(
         "https://api.twitter.com/oauth/request_token",
@@ -81,36 +79,37 @@ public class OAuthFragment extends Fragment {
     layout = inflater.inflate(R.layout.oauth, container, false);
     TextView usernameText = (TextView) layout.findViewById(R.id.username);
     usernameText.setText(yamba.prefs.getString("username", ""));
-    
-    Button authorizeButton = (Button) layout.findViewById(R.id.authorize_button);
-    authorizeButton.setOnClickListener( new OnClickListener() {
+
+    Button authorizeButton = (Button) layout
+        .findViewById(R.id.authorize_button);
+    authorizeButton.setOnClickListener(new OnClickListener() {
       public void onClick(View view) {
-        username = ((EditText) layout.findViewById(R.id.username)).getText().toString();
+        username = ((EditText) layout.findViewById(R.id.username)).getText()
+            .toString();
         new OAuthAuthorizeTask().execute();
       }
     });
-    
+
     return layout;
   }
 
   /* Callback once we are done with the authorization of this app with Twitter. */
-//  @Override
-//  public void onNewIntent(Intent intent) {
-//    super.onNewIntent(intent);
-//    Log.d(TAG, "intent: " + intent);
-//
-//    // Check if this is a callback from OAuth
-//    Uri uri = intent.getData();
-//    if (uri != null && uri.getScheme().equals(OAUTH_CALLBACK_SCHEME)) {
-//      Log.d(TAG, "callback: " + uri.getPath());
-//
-//      String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
-//      Log.d(TAG, "verifier: " + verifier);
-//
-//      new RetrieveAccessTokenTask().execute(verifier);
-//    }
-//  }
-
+  // @Override
+  // public void onNewIntent(Intent intent) {
+  // super.onNewIntent(intent);
+  // Log.d(TAG, "intent: " + intent);
+  //
+  // // Check if this is a callback from OAuth
+  // Uri uri = intent.getData();
+  // if (uri != null && uri.getScheme().equals(OAUTH_CALLBACK_SCHEME)) {
+  // Log.d(TAG, "callback: " + uri.getPath());
+  //
+  // String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
+  // Log.d(TAG, "verifier: " + verifier);
+  //
+  // new RetrieveAccessTokenTask().execute(verifier);
+  // }
+  // }
 
   /* Responsible for starting the Twitter authorization */
   class OAuthAuthorizeTask extends AsyncTask<Void, Void, String> {
@@ -200,43 +199,9 @@ public class OAuthFragment extends Fragment {
     protected void onPostExecute(String result) {
       super.onPostExecute(result);
       if (result != null) {
-        Toast.makeText(getActivity(), result, Toast.LENGTH_LONG)
-            .show();
-        // OAuthActivity.this.finish();
+        Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
       }
     }
   }
 
-  /* Responsible for getting Twitter status */
-  class GetStatusTask extends AsyncTask<Void, Void, String> {
-    @Override
-    protected String doInBackground(Void... params) {
-      return yamba.twitter.getStatus().text;
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-      super.onPostExecute(result);
-      Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-    }
-  }
-
-  /* Responsible for posting new status to Twitter */
-  class PostStatusTask extends AsyncTask<String, Void, String> {
-    @Override
-    protected String doInBackground(String... params) {
-      try {
-        yamba.twitter.setStatus(params[0]);
-        return "Successfully posted: " + params[0];
-      } catch (TwitterException e) {
-        return "Error connecting to server.";
-      }
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-      super.onPostExecute(result);
-      Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-    }
-  }
 }

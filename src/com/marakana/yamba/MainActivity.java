@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements TabListener {
-  private static final String TAG = "Yamba";
+  private static final String TAG = "MainActivity";
   private int mThemeId = -1;
   static final String FRAGMENT_COMPOSE = "FRAGMENT_COMPOSE";
   static final String FRAGMENT_PREFS = "FRAGMENT_PREFS";
@@ -83,25 +83,9 @@ public class MainActivity extends Activity implements TabListener {
       return true;
     case R.id.itemCompose:
       showFragment("com.marakana.yamba.ComposeFragment");
-
-      // fragmentTransaction = fragmentManager.beginTransaction();
-      //
-      // // Remove old compose fragment
-      // Fragment prev =
-      // getFragmentManager().findFragmentByTag(FRAGMENT_COMPOSE);
-      // if (prev != null) {
-      // fragmentTransaction.remove(prev);
-      // }
-      //
-      // fragmentTransaction.addToBackStack(null);
-      //
-      // // Create and show the dialog.
-      // ComposeFragment composeFragment = ComposeFragment.newInstance();
-      // composeFragment.show(fragmentTransaction, FRAGMENT_COMPOSE);
       return true;
     case R.id.itemPrefs:
       showFragment("com.marakana.yamba.PrefsFragment");
-
       return true;
     default:
       return super.onOptionsItemSelected(item);
@@ -117,8 +101,8 @@ public class MainActivity extends Activity implements TabListener {
 
   /* TabListener callback when current tab was re-selected */
   public void onTabReselected(Tab tab, FragmentTransaction ft) {
-    TimelineFragment timelineFragment = (TimelineFragment) getFragmentManager()
-        .findFragmentById(R.id.list);
+//    TimelineFragment timelineFragment = (TimelineFragment) getFragmentManager()
+//        .findFragmentById(R.id.list);
 
   }
 
@@ -179,7 +163,7 @@ public class MainActivity extends Activity implements TabListener {
 
     if (fragment == null) {
       fragment = Fragment.instantiate(yamba, tag);
-      transaction.replace(R.id.container, fragment, tag);
+      transaction.add(R.id.container, fragment, tag);
       transaction.addToBackStack(tag);
       Log.d(TAG, "Added " + tag);
     }

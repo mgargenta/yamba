@@ -25,7 +25,7 @@ public class TimelineFragment extends ListFragment implements
   static final int LOADER_MENTIONS = 2;
 
   // This is the Adapter being used to display the list's data.
-  SimpleCursorAdapter mAdapter;
+  SimpleCursorAdapter adapter;
 
   @Override
   public void onActivityCreated(Bundle savedInstanceState) {
@@ -35,14 +35,11 @@ public class TimelineFragment extends ListFragment implements
     // application this would come from a resource.
     setEmptyText("No timeline yet...");
 
-    // We have a menu item to show in action bar.
-    setHasOptionsMenu(true);
-
     // Create an empty adapter we will use to display the loaded data.
-    mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.status_row,
+    adapter = new SimpleCursorAdapter(getActivity(), R.layout.status_row,
         null, FROM, TO, 0);
-    mAdapter.setViewBinder(VIEW_BINDER);
-    setListAdapter(mAdapter);
+    adapter.setViewBinder(VIEW_BINDER);
+    setListAdapter(adapter);
 
     // Prepare the loader. Either re-connect with an existing one,
     // or start a new one.
@@ -77,7 +74,7 @@ public class TimelineFragment extends ListFragment implements
     // Swap the new cursor in. (The framework will take care of closing the
     // old cursor once we return.)
     Log.d(TAG, "onLoadFinished with " + data.getCount());
-    mAdapter.swapCursor(data);
+    adapter.swapCursor(data);
   }
 
   public void onLoaderReset(Loader<Cursor> loader) {
@@ -85,7 +82,7 @@ public class TimelineFragment extends ListFragment implements
     // above is about to be closed. We need to make sure we are no
     // longer using it.
       Log.d(TAG, "onLoaderReset");
-    mAdapter.swapCursor(null);
+    adapter.swapCursor(null);
   }
 
   // Used to convert the url string to the profile image to the actual image
