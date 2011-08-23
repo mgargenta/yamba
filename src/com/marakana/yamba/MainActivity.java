@@ -45,8 +45,11 @@ public class MainActivity extends Activity implements TabListener {
 
     // Set the action bar
     ActionBar bar = getActionBar();
-    bar.addTab(bar.newTab().setText("Timeline").setTabListener(this));
-    // bar.addTab(bar.newTab().setText("@Mentions").setTabListener(this));
+    bar.addTab(
+        bar.newTab().setText("Timeline")
+            .setTag(TimelineFragment.LOADER_TIMELINE).setTabListener(this));
+    bar.addTab(bar.newTab().setText("@Mentions")
+        .setTag(TimelineFragment.LOADER_MENTIONS).setTabListener(this));
 
     bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
         | ActionBar.DISPLAY_USE_LOGO);
@@ -101,8 +104,10 @@ public class MainActivity extends Activity implements TabListener {
 
   /* TabListener callback when current tab was re-selected */
   public void onTabReselected(Tab tab, FragmentTransaction ft) {
-//    TimelineFragment timelineFragment = (TimelineFragment) getFragmentManager()
-//        .findFragmentById(R.id.list);
+    TimelineFragment timelineFragment = (TimelineFragment) getFragmentManager()
+        .findFragmentById(R.id.list);
+    timelineFragment.getLoaderManager().initLoader(
+        (Integer)tab.getTag(), null, timelineFragment);
 
   }
 

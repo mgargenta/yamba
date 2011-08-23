@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +21,7 @@ public class TimelineFragment extends ListFragment implements
       StatusProvider.C_TEXT, StatusProvider.C_PROFILE_IMAGE_URL };
   static final int[] TO = new int[] { R.id.status_username, R.id.status_text,
       R.id.status_image };
-  
+
   static final int LOADER_TIMELINE = 1;
   static final int LOADER_MENTIONS = 2;
 
@@ -36,8 +37,8 @@ public class TimelineFragment extends ListFragment implements
     setEmptyText("No timeline yet...");
 
     // Create an empty adapter we will use to display the loaded data.
-    adapter = new SimpleCursorAdapter(getActivity(), R.layout.status_row,
-        null, FROM, TO, 0);
+    adapter = new SimpleCursorAdapter(getActivity(), R.layout.status_row, null,
+        FROM, TO, 0);
     adapter.setViewBinder(VIEW_BINDER);
     setListAdapter(adapter);
 
@@ -55,17 +56,19 @@ public class TimelineFragment extends ListFragment implements
 
   /* Implementation of LoaderManager.LoaderCallbacks */
   public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-    // This is called when a new Loader needs to be created. 
+    // This is called when a new Loader needs to be created.
     // We only have one Loader, so we don't care about the ID.
     Log.d(TAG, "onCreateLoader");
 
-    switch(id) {
+    switch (id) {
     case LOADER_TIMELINE:
-      return new CursorLoader(getActivity(), StatusProvider.CONTENT_URI,
-          PROJECTION, StatusProvider.C_REPLY_TO_ID + " IS NULL", null,
-          StatusProvider.C_CREATED_AT + " DESC");
+      Log.d(TAG, "onCreateLoader for LOADER_TIMELINE");
+      return new CursorLoader(getActivity(), Uri.withAppendedPath(
+          StatusProvider.CONTENT_URI, "tweets"), null, null, null, null);
     case LOADER_MENTIONS:
-      return null;
+      Log.d(TAG, "onCreateLoader for LOADER_MENTIONS");
+      return new CursorLoader(getActivity(), Uri.withAppendedPath(
+          StatusProvider.CONTENT_URI, "mentions"), null, null, null, null);
     }
     return null; // Unimplemented loader
   }
@@ -81,7 +84,7 @@ public class TimelineFragment extends ListFragment implements
     // This is called when the last Cursor provided to onLoadFinished()
     // above is about to be closed. We need to make sure we are no
     // longer using it.
-      Log.d(TAG, "onLoaderReset");
+    Log.d(TAG, "onLoaderReset");
     adapter.swapCursor(null);
   }
 
